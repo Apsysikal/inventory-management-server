@@ -1,7 +1,7 @@
 import path from "path";
 import express, { Express, Request, Response } from "express";
 
-import itemRouter from "./routes/item.router";
+import itemRouter from "./routes/item.route";
 
 const app = express();
 
