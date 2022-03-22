@@ -7,15 +7,14 @@ services:
       dockerfile: Dockerfile
       args:
         VARIANT: 16-bullseye
-      volumes:
-        - ..:/workspace
-      command: sleep infinity
-      networks:
-        - frontend
-        - backend
+    volumes:
+      - ..:/workspace
+    command: sleep infinity
+    networks:
+      - frontend
+      - backend
 
   db:
-    container_name: db
     restart: unless-stopped
     image: mongo
     volumes:
