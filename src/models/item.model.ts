@@ -11,6 +11,7 @@ const schema = new Schema<Item>(
     serial: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,

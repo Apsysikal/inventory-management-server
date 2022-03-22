@@ -61,15 +61,36 @@ router.get("/", async function (req: Request, res: Response) {
   try {
     const item = await getItem(skipNumber, limitNumber);
     return res.status(200).contentType("application/json").json(item).end();
-  } catch (error) {}
-
-  return res.status(200).end();
+  } catch (error) {
+    return res
+      .status(500)
+      .contentType("application/json")
+      .json("Internal server error")
+      .end();
+  }
 });
 
 router.post("/", async function (req: Request, res: Response) {
   const { serial, description, count } = req.body;
-  const item = await createItem({ serial, description, count });
-  res.status(201).contentType("application/json").json(item).end();
+
+  try {
+    const item = await createItem({ serial, description, count });
+    return res.status(201).contentType("application/json").json(item).end();
+  } catch (error) {
+    if (String(error).match(/duplicate key/)) {
+      return res
+        .status(409)
+        .contentType("application/json")
+        .json("Item already exists")
+        .end();
+    }
+
+    return res
+      .status(400)
+      .contentType("application/json")
+      .json("Invalid item")
+      .end();
+  }
 });
 
 export default router;

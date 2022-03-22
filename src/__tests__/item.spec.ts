@@ -4,17 +4,33 @@ import ItemModel from "../models/item.model";
 
 import app from "../app";
 
+let lastGeneratedItemNumber = 0;
+
 // Writes 100 example items to the database for testing
 async function initializeDatabase() {
   for (let index = 0; index < 100; index++) {
     const item = {
-      serial: `ABC-${index}`,
-      description: `Test description for Item Nr. ${index}`,
+      serial: `ABC-${lastGeneratedItemNumber}`,
+      description: `Test description for Item Nr. ${lastGeneratedItemNumber}`,
       count: 0,
     };
 
+    lastGeneratedItemNumber++;
+
     await ItemModel.create(item);
   }
+}
+
+function generateItem() {
+  const item = {
+    serial: `ABC-${lastGeneratedItemNumber}`,
+    description: `Test description for Item Nr. ${lastGeneratedItemNumber}`,
+    count: 0,
+  };
+
+  lastGeneratedItemNumber++;
+
+  return item;
 }
 
 beforeAll(async function () {
@@ -147,6 +163,74 @@ describe("Tests the /item endpoint", () => {
       expect(response.statusCode).toStrictEqual(200);
       expect(response.type).toStrictEqual("application/json");
       expect(response.body).toHaveLength(50);
+    });
+  });
+
+  describe("POST /item", () => {
+    it("Should return a 201 status code on successful item creation", async () => {
+      const item = generateItem();
+      const response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      expect(response.statusCode).toStrictEqual(201);
+      expect(response.type).toStrictEqual("application/json");
+    });
+
+    it("Should return a 400 status code when called with an empty body", async () => {
+      const response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send();
+
+      expect(response.statusCode).toStrictEqual(400);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toContain("Invalid item");
+    });
+
+    it("Should return a 400 status code when called with an invalid body", async () => {
+      const response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send({ serial: 0 });
+
+      expect(response.statusCode).toStrictEqual(400);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toContain("Invalid item");
+    });
+
+    it("Should return a 409 status code when called with a body that already exists", async () => {
+      const item = generateItem();
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      expect(response.statusCode).toStrictEqual(201);
+      expect(response.type).toStrictEqual("application/json");
+
+      response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      expect(response.statusCode).toStrictEqual(409);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toContain("Item already exists");
+    });
+
+    it("Should return the item created in the body", async () => {
+      const item = generateItem();
+
+      const response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      expect(response.statusCode).toStrictEqual(201);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toEqual(expect.objectContaining(item));
     });
   });
 });
