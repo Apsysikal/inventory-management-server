@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { createItem, getItem } from "../services/item.service";
 
 // /item
 const router = Router();
@@ -6,10 +7,9 @@ const router = Router();
 function parseSkipFromQuery(query: string | undefined): number {
   let skip = 0;
 
-  // Return skip when no query is defined
   if (!query) return skip;
+  if (query === "0") return skip; // Edge case because Number("0") is falsy
 
-  // Throw an error, when query cant be parsed into a number
   if (!Number(query)) throw new Error("Query cannot be parsed into number");
 
   skip = Number(query);
@@ -35,9 +35,11 @@ function parseLimitFromQuery(query: string | undefined): number {
 
 router.get("/", async function (req: Request, res: Response) {
   let { skip, limit } = req.query;
+  let skipNumber = 0;
+  let limitNumber = 25;
 
   try {
-    const skipNumber = parseSkipFromQuery(skip as string);
+    skipNumber = parseSkipFromQuery(skip as string);
   } catch (error) {
     return res
       .status(400)
@@ -47,7 +49,7 @@ router.get("/", async function (req: Request, res: Response) {
   }
 
   try {
-    const limitNumber = parseLimitFromQuery(limit as string);
+    limitNumber = parseLimitFromQuery(limit as string);
   } catch (error) {
     return res
       .status(400)
@@ -55,8 +57,19 @@ router.get("/", async function (req: Request, res: Response) {
       .json("Bad input parameter")
       .end();
   }
+
+  try {
+    const item = await getItem(skipNumber, limitNumber);
+    return res.status(200).contentType("application/json").json(item).end();
+  } catch (error) {}
 
   return res.status(200).end();
+});
+
+router.post("/", async function (req: Request, res: Response) {
+  const { serial, description, count } = req.body;
+  const item = await createItem({ serial, description, count });
+  res.status(201).contentType("application/json").json(item).end();
 });
 
 export default router;
