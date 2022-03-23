@@ -1,5 +1,10 @@
 import { Request, Response, Router } from "express";
-import { createItem, getItem } from "../services/item.service";
+import {
+  createItem,
+  getItem,
+  getItemById,
+  modifyItem,
+} from "../services/item.service";
 
 // /item
 const router = Router();
@@ -89,6 +94,37 @@ router.post("/", async function (req: Request, res: Response) {
       .status(400)
       .contentType("application/json")
       .json("Invalid item")
+      .end();
+  }
+});
+
+router.get("/:id", async function (req: Request, res: Response) {
+  const { id } = req.params;
+
+  try {
+    const item = await getItemById(id);
+    return res.status(200).type("application/json").json(item).end();
+  } catch (error) {
+    return res
+      .status(404)
+      .type("application/json")
+      .json("Item not found")
+      .end();
+  }
+});
+
+router.put("/:id", async function (req: Request, res: Response) {
+  const { id } = req.params;
+  const item = req.body;
+
+  try {
+    const modifiedItem = await modifyItem(id, item);
+    return res.status(200).type("application/json").json(modifiedItem).end();
+  } catch (error) {
+    return res
+      .status(404)
+      .type("application/json")
+      .json("Item not found")
       .end();
   }
 });

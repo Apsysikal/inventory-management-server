@@ -233,4 +233,128 @@ describe("Tests the /item endpoint", () => {
       expect(response.body).toEqual(expect.objectContaining(item));
     });
   });
+
+  describe("GET /item/:id", () => {
+    it("Should return a 200 status code on successful item retrieval", async () => {
+      const item = generateItem();
+
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      const createdItem = response.body;
+
+      response = await request(app).get(`/item/${createdItem._id}`).send();
+
+      expect(response.statusCode).toStrictEqual(200);
+      expect(response.type).toStrictEqual("application/json");
+    });
+
+    it("Should return a 404 status code if the item does not exist", async () => {
+      const invalidId = "invalididandsomestuff";
+
+      const response = await request(app).get(`/item/${invalidId}`).send();
+
+      expect(response.statusCode).toStrictEqual(404);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toContain("Item not found");
+    });
+
+    it("Should return the item in the body", async () => {
+      const item = generateItem();
+
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      const createdItem = response.body;
+
+      response = await request(app).get(`/item/${createdItem._id}`).send();
+
+      expect(response.statusCode).toStrictEqual(200);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toEqual(expect.objectContaining(createdItem));
+    });
+  });
+
+  describe("PUT /item/:id", () => {
+    it("Should return a 200 status code on successful item modification", async () => {
+      const item = generateItem();
+      const modifiedDescription = "Modified description";
+      const modifiedCount = 7;
+
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      const createdItem = response.body;
+
+      createdItem.description = modifiedDescription;
+      createdItem.count = modifiedCount;
+
+      response = await request(app).put(`/item/${createdItem._id}`).send();
+
+      expect(response.statusCode).toStrictEqual(200);
+      expect(response.type).toStrictEqual("application/json");
+    });
+
+    it("Should return a 404 status code if the item does not exist", async () => {
+      const item = generateItem();
+      const invalidId = "invalididandsomestuff";
+      const modifiedDescription = "Modified description";
+      const modifiedCount = 7;
+
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      const createdItem = response.body;
+
+      createdItem.description = modifiedDescription;
+      createdItem.count = modifiedCount;
+
+      response = await request(app).put(`/item/${invalidId}`).send(createdItem);
+
+      expect(response.statusCode).toStrictEqual(404);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toContain("Item not found");
+    });
+
+    it("Should return the modified on successful item modification", async () => {
+      const item = generateItem();
+      const modifiedDescription = "Modified description";
+      const modifiedCount = 7;
+
+      let response = await request(app)
+        .post("/item")
+        .type("application/json")
+        .send(item);
+
+      const createdItem = response.body;
+
+      createdItem.description = modifiedDescription;
+      createdItem.count = modifiedCount;
+
+      response = await request(app)
+        .put(`/item/${createdItem._id}`)
+        .send(createdItem);
+
+      expect(response.statusCode).toStrictEqual(200);
+      expect(response.type).toStrictEqual("application/json");
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          __v: createdItem.__v,
+          _id: createdItem._id,
+          count: createdItem.count,
+          createdAt: createdItem.createdAt,
+          description: createdItem.description,
+          serial: createdItem.serial,
+        })
+      );
+    });
+  });
 });

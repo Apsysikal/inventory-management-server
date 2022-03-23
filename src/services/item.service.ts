@@ -30,7 +30,9 @@ export async function getItemById(id: string) {
 
 export async function modifyItem(id: string, item: Item) {
   try {
-    const updatedItem = await ItemModel.findById(id).update(item);
+    const updatedItem = await ItemModel.findByIdAndUpdate(id, item, {
+      new: true,
+    });
     return updatedItem;
   } catch (error) {
     throw error;
