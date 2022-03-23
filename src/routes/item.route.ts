@@ -4,7 +4,7 @@ import {
   getItem,
   getItemById,
   modifyItem,
-} from "../services/item.service";
+} from "../controllers/item.controller";
 
 // /item
 const router = Router();
