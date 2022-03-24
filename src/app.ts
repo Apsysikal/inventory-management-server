@@ -1,5 +1,5 @@
 import path from "path";
-import express, { Express, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 
 import itemRouter from "./routes/item.route";

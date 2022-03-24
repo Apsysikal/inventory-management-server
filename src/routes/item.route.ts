@@ -39,7 +39,7 @@ function parseLimitFromQuery(query: string | undefined): number {
 }
 
 router.get("/", async function (req: Request, res: Response) {
-  let { skip, limit } = req.query;
+  const { skip, limit } = req.query;
   let skipNumber = 0;
   let limitNumber = 25;
 
