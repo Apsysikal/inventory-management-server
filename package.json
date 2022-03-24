@@ -4,17 +4,20 @@
   "description": "Backend for the Inventory Management project.",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
+    "start": "ts-node-dev -r dotenv/config src/index.ts",
     "build": "tsc",
     "test": "jest --coverage"
   },
   "author": "Benedikt Schniepp",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.2.7"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",
