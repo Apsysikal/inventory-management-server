@@ -1,10 +1,11 @@
 import app from "./app";
 import mongoose from "mongoose";
 
-const dbUri = "mongodb://db:27017/test";
+const databaseUri = String(process.env.MONGODB_URI);
+const port = Number(process.env.PORT) || 3000;
 
 mongoose.connection.on("connected", () => {
-  console.debug(`Mongoose connection open to ${dbUri}`);
+  console.debug(`Mongoose connection open to ${databaseUri}`);
 });
 
 mongoose.connection.on("error", (error) => {
@@ -17,18 +18,17 @@ mongoose.connection.on("disconnected", () => {
 });
 
 mongoose
-  .connect(dbUri)
+  .connect(databaseUri)
   .then(() => {
     console.info("Mongoose connected");
+
+    app.listen(port);
+    console.info(`App listening on port ${port}`);
   })
   .catch((error) => {
     console.info("Failed to connect");
     console.error(error);
   });
-
-const port = Number(process.env.PORT) || 3000;
-
-app.listen(port);
 
 process.on("SIGINT", () => {
   mongoose.connection.close(() => {

@@ -1,9 +1,12 @@
 import path from "path";
-import express, { Express, Request, Response } from "express";
+import express from "express";
+import cors from "cors";
 
 import itemRouter from "./routes/item.route";
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.static(path.resolve(__dirname, "..", "public")));
 app.use(express.json());
