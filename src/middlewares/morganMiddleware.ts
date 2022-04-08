@@ -3,7 +3,7 @@ import morgan, { StreamOptions } from "morgan";
 import Logger from "../config/logger";
 
 const stream: StreamOptions = {
-  write: (message: string) => Logger.debug(message),
+  write: (message: string) => Logger.debug(message.replace(/\n$/, "")),
 };
 
 const skip = () => {
