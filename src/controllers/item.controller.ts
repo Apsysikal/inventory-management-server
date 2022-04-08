@@ -1,3 +1,4 @@
+import Logger from "../config/logger";
 import ItemModel, { Item } from "../models/item.model";
 
 export async function createItem(item: Item) {
@@ -6,7 +7,7 @@ export async function createItem(item: Item) {
     await newItem.save();
     return newItem;
   } catch (error) {
-    console.error(error);
+    Logger.error(error);
     throw error;
   }
 }
@@ -16,7 +17,7 @@ export async function getItem(skip: number, limit: number) {
     const item = await ItemModel.find().skip(skip).limit(limit);
     return item;
   } catch (error) {
-    console.error(error);
+    Logger.error(error);
     throw error;
   }
 }
@@ -26,7 +27,7 @@ export async function getItemById(id: string) {
     const item = await ItemModel.findById(id);
     return item;
   } catch (error) {
-    console.error(error);
+    Logger.error(error);
     throw error;
   }
 }
@@ -38,7 +39,7 @@ export async function modifyItem(id: string, item: Item) {
     });
     return updatedItem;
   } catch (error) {
-    console.error(error);
+    Logger.error(error);
     throw error;
   }
 }
