@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-export interface Item {
+interface Item {
   serial: string;
   description: string;
   count: number;
@@ -29,4 +29,4 @@ const schema = new Schema<Item>(
 
 const ItemModel = model<Item>("Item", schema);
 
-export default ItemModel;
+export { Item, ItemModel };

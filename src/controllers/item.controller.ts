@@ -1,44 +1,46 @@
-import ItemModel, { Item } from "../models/item.model";
+import { RequestHandler } from "express";
 
-export async function createItem(item: Item) {
-  try {
-    const newItem = new ItemModel(item);
-    await newItem.save();
-    return newItem;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+import { ItemService } from "../services/item.service";
 
-export async function getItem(skip: number, limit: number) {
-  try {
-    const item = await ItemModel.find().skip(skip).limit(limit);
-    return item;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+import { createRequestQuery } from "../utils/query";
 
-export async function getItemById(id: string) {
+export const createItem: RequestHandler = async (req, res, next) => {
   try {
-    const item = await ItemModel.findById(id);
-    return item;
+    const data = req.body;
+    const responseData = await ItemService.createItem(data);
+    res.status(201).json(responseData);
   } catch (error) {
-    console.error(error);
-    throw error;
+    next(error);
   }
-}
+};
 
-export async function modifyItem(id: string, item: Item) {
+export const getItem: RequestHandler = async (req, res, next) => {
   try {
-    const updatedItem = await ItemModel.findByIdAndUpdate(id, item, {
-      new: true,
-    });
-    return updatedItem;
+    const requestOptions = createRequestQuery(req);
+    const responseData = await ItemService.getItem(requestOptions);
+    res.json(responseData);
   } catch (error) {
-    console.error(error);
-    throw error;
+    next(error);
   }
-}
+};
+
+export const getItemById: RequestHandler = async (req, res, next) => {
+  try {
+    const { itemId } = req.params;
+    const responseData = await ItemService.getItemById(itemId);
+    res.json(responseData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const modifyItem: RequestHandler = async (req, res, next) => {
+  try {
+    const { itemId } = req.params;
+    const data = req.body;
+    const responseData = await ItemService.modifyItem(itemId, data);
+    res.json(responseData);
+  } catch (error) {
+    next(error);
+  }
+};
