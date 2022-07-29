@@ -4,7 +4,7 @@
   "description": "Backend for the Inventory Management project.",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev -r dotenv/config src/index.ts",
+    "start": "ts-node-dev --files=./src/types -r dotenv/config src/index.ts",
     "build": "tsc",
     "test": "jest --coverage",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.json .",
@@ -14,12 +14,15 @@
   "author": "Benedikt Schniepp",
   "license": "MIT",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "mongoose": "^6.2.7"
+    "mongoose": "^6.2.7",
+    "openid-client": "^5.1.8"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
