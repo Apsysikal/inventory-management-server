@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { Client, Issuer, generators, UserinfoResponse } from "openid-client";
 import { User } from "../models/user.model";
+import { storeTemporaryCookie, getTemporaryCookie } from "./cookie";
 
 const ClientNotInitializedError = new Error("Client not initialized");
 const CookieNotFoundError = new Error("Cookie is not found in the request");
@@ -79,7 +80,7 @@ export abstract class AuthenticationProvider {
         // code_challenge_method: codeChallengeMethod,
       });
 
-      res.cookie(cookieName, nonce, { httpOnly: true }); // TODO: Encrypt the cookie
+      storeTemporaryCookie(cookieName, res, { nonce }); // TODO: Encrypt the cookie
       return res.redirect(redirectUrl);
     };
   };
@@ -95,9 +96,12 @@ export abstract class AuthenticationProvider {
 
     return async (req, res, next) => {
       if (!this.client) return next(ClientNotInitializedError);
-      if (!req.cookies[cookieName]) return next(CookieNotFoundError);
 
-      const nonce = req.cookies[cookieName] as string;
+      const cookie = getTemporaryCookie(cookieName, req, res);
+
+      if (!cookie) return next(CookieNotFoundError);
+
+      const { nonce } = cookie;
       const parameters = this.client.callbackParams(req);
       const tokenSet = await this.client.callback(
         this.redirectUrls[0],
@@ -110,7 +114,6 @@ export abstract class AuthenticationProvider {
 
       req.user = this.generateUserFromUserInformation(userInformation);
 
-      res.clearCookie(cookieName, { httpOnly: true });
       return next();
     };
   };

@@ -3,7 +3,7 @@ import { ItemScope } from "../models/user.model";
 import {
   AuthenticationProvider,
   AuthenticationProviderOptions,
-} from "./provider";
+} from "./base.provider";
 
 export class AzureProvider extends AuthenticationProvider {
   constructor(options: AuthenticationProviderOptions) {
