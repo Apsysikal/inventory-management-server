@@ -15,6 +15,8 @@ const AccessTokenDoesNotExist = new Error(
   "Access Token does not exist on request."
 );
 
+const FRONTEND_URL = String(process.env.FRONTEND_URL);
+
 export const findOrCreateUser: RequestHandler = async (
   req: Request,
   res: Response,
@@ -42,10 +44,7 @@ export const generateTokenSet: RequestHandler = async (
     const accessToken = await UserService.generateAccessToken(user);
     const refreshToken = await UserService.generateRefreshToken(user);
 
-    return res.json({
-      accessToken,
-      refreshToken,
-    });
+    res.redirect(`${FRONTEND_URL}/#at=${accessToken}&rt=${refreshToken}`);
   } catch (error) {
     return next(error);
   }
