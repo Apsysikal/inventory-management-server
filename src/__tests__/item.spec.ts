@@ -1,6 +1,6 @@
 import request from "supertest";
 import mongoose from "mongoose";
-import ItemModel from "../models/item.model";
+import { ItemModel } from "../models/item.model";
 
 import app from "../app";
 
