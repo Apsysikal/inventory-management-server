@@ -49,6 +49,12 @@ class UserService {
     return await new UserModel(data).save();
   }
 
+  static async findUser(
+    id: string
+  ): Promise<Promise<HydratedDocument<User> | null>> {
+    return await UserModel.findById(id);
+  }
+
   static async findOrCreateUser(data: User): Promise<HydratedDocument<User>> {
     const filter = { provider: data.provider, providerId: data.providerId };
     const user = await UserModel.findOne(filter);

@@ -11,6 +11,7 @@ import { Request } from "express";
 
 export interface QueryOptions {
   sort: string;
+  list: string;
   limit: number;
   skip: number;
   query: Record<string, unknown>;
@@ -73,13 +74,13 @@ export const createRequestQuery = (req: Request): QueryOptions => {
   const requestOptions = Object();
   let queryOptions = Object();
 
-  const { skip, limit, query } = req.query;
+  const { list, skip, limit, query } = req.query;
 
   if (query) queryOptions = sanitizeQuery(query as string);
 
+  requestOptions.list = list || "";
   requestOptions.skip = Number(skip) || 0;
   requestOptions.limit = Number(limit) || 25;
-
   requestOptions.query = queryOptions;
 
   return requestOptions;

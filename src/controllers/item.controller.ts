@@ -6,7 +6,9 @@ import { createRequestQuery } from "../utils/query";
 
 export const createItem: RequestHandler = async (req, res, next) => {
   try {
+    const { list } = req.query || "";
     const data = req.body;
+    data.list = list;
     const responseData = await ItemService.createItem(data);
     res.status(201).json(responseData);
   } catch (error) {

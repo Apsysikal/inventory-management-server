@@ -1,5 +1,5 @@
 import { UserinfoResponse } from "openid-client";
-import { ItemScope } from "../models/user.model";
+import { Scopes } from "../models/user.model";
 import {
   AuthenticationProvider,
   AuthenticationProviderOptions,
@@ -18,7 +18,12 @@ export class GoogleProvider extends AuthenticationProvider {
       firstName: userInfo.given_name as string,
       lastName: userInfo.family_name as string,
       displayName: userInfo.name as string,
-      scopes: [ItemScope.ReadItems],
+      scopes: [
+        Scopes.ReadItems,
+        Scopes.ModifyItems,
+        Scopes.ReadLists,
+        Scopes.ModifyItems,
+      ],
       refreshTokens: [
         {
           token: "",

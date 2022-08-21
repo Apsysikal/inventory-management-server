@@ -1,6 +1,6 @@
 import express from "express";
 import { HydratedDocument } from "mongoose";
-import { User } from "../models/user.model";
+import { User, TokenUser } from "../models/user.model";
 import {
   IAccessTokenPayload,
   IRefreshTokenPayload,
@@ -9,7 +9,7 @@ import {
 declare global {
   namespace Express {
     interface Request {
-      user?: User | HydratedDocument<User>;
+      user?: User | HydratedDocument<User> | TokenUser;
       accessToken?: IAccessTokenPayload;
       refreshToken?: IRefreshTokenPayload;
     }

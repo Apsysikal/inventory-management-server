@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import itemRouter from "./routes/item.route";
 import userRouter from "./routes/user.route";
+import listRouter from "./routes/list.route";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(morgan("dev"));
 
 app.use("/user", userRouter);
 app.use("/item", itemRouter);
+app.use("/list", listRouter);
 
 export default app;
