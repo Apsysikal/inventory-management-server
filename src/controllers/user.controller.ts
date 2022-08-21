@@ -25,7 +25,7 @@ export const findOrCreateUser: RequestHandler = async (
   try {
     if (!req.user) return next(UserObjectDoesNotExist);
 
-    req.user = await UserService.findOrCreateUser(req.user);
+    req.user = await UserService.findOrCreateUser(req.user as User);
     return next();
   } catch (error) {
     return next(error);

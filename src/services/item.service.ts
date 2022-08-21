@@ -3,7 +3,7 @@ import { QueryOptions } from "../utils/query";
 
 class ItemService {
   static async getItem(options: QueryOptions): Promise<Item[] | Item> {
-    return await ItemModel.find(options.query)
+    return await ItemModel.find({ ...options.query, list: options.list })
       .skip(options.skip)
       .limit(options.limit);
   }

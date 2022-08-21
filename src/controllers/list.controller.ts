@@ -30,7 +30,7 @@ export const getListById: RequestHandler = async (req, res, next) => {
   try {
     // const user = req.user as TokenUser; // Make sure middleware is included
 
-    const { listId } = req.query;
+    const { listId } = req.params;
     if (!listId) return next("No list id");
 
     const responseData = await ListService.getListById(listId as string);

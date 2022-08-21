@@ -6,9 +6,7 @@ import { createRequestQuery } from "../utils/query";
 
 export const createItem: RequestHandler = async (req, res, next) => {
   try {
-    const { list } = req.query || "";
     const data = req.body;
-    data.list = list;
     const responseData = await ItemService.createItem(data);
     res.status(201).json(responseData);
   } catch (error) {
@@ -19,6 +17,7 @@ export const createItem: RequestHandler = async (req, res, next) => {
 export const getItem: RequestHandler = async (req, res, next) => {
   try {
     const requestOptions = createRequestQuery(req);
+    if (!requestOptions.list) return next("List must be defined");
     const responseData = await ItemService.getItem(requestOptions);
     res.json(responseData);
   } catch (error) {

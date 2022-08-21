@@ -9,7 +9,8 @@
     "test": "jest --coverage",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.json .",
     "lint:fix": "eslint --ignore-path .gitignore --ext .js,.ts,.json . --fix",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "generate-keys": "ts-node ./src/utils/generateJwtSecrets.ts"
   },
   "author": "Benedikt Schniepp",
   "license": "MIT",
