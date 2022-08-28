@@ -28,12 +28,11 @@ export const getList: RequestHandler = async (req, res, next) => {
 
 export const getListById: RequestHandler = async (req, res, next) => {
   try {
-    // const user = req.user as TokenUser; // Make sure middleware is included
-
+    const user = req.user as TokenUser; // Make sure middleware is included
     const { listId } = req.params;
     if (!listId) return next("No list id");
 
-    const responseData = await ListService.getListById(listId as string);
+    const responseData = await ListService.getListById(listId, user.id);
     // Check for user permission to access list
     return res.json(responseData);
   } catch (error) {
@@ -43,9 +42,10 @@ export const getListById: RequestHandler = async (req, res, next) => {
 
 export const modifyList: RequestHandler = async (req, res, next) => {
   try {
+    const user = req.user as TokenUser; // Make sure middleware is included
     const { listId } = req.params;
     const data = req.body;
-    const responseData = await ListService.modifyList(listId, data);
+    const responseData = await ListService.modifyList(listId, user.id, data);
     res.json(responseData);
   } catch (error) {
     next(error);

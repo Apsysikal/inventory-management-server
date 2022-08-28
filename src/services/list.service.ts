@@ -2,23 +2,40 @@ import { List, ListModel } from "../models/list.model";
 
 class ListService {
   static async getList(userId: string): Promise<List[] | List> {
-    return await ListModel.find({ owner: userId }).populate({
+    // Only find lists where the user is also a member of
+    return await ListModel.find({ members: { $in: userId } }).populate({
       path: "owner members",
       select: "_id displayName",
     });
   }
 
-  static async getListById(id: string): Promise<List | null> {
-    return await ListModel.findById(id).populate({
-      path: "owner members",
-      select: "_id displayName",
-    });
-  }
-
-  static async modifyList(id: string, list: List): Promise<List> {
-    const record = await ListModel.findByIdAndUpdate(id, list, {
-      new: true,
+  static async getListById(id: string, userId: string): Promise<List | null> {
+    // Only find lists where the user is also a member of
+    return await ListModel.findOne({
+      _id: id,
+      members: { $in: userId },
     }).populate({
+      path: "owner members",
+      select: "_id displayName",
+    });
+  }
+
+  static async modifyList(
+    id: string,
+    userId: string,
+    list: List
+  ): Promise<List> {
+    // Only find lists where the user is also a member of
+    const record = await ListModel.findOneAndUpdate(
+      {
+        _id: id,
+        members: { $in: userId },
+      },
+      list,
+      {
+        new: true,
+      }
+    ).populate({
       path: "owner members",
       select: "_id displayName",
     });

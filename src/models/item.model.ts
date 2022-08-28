@@ -23,6 +23,7 @@ const schema = new Schema<Item>(
     },
     list: {
       type: Schema.Types.ObjectId,
+      ref: "List",
       required: true,
     },
   },
